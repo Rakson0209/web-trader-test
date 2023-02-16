@@ -25,7 +25,8 @@ def stock_crawler():
     df["etl_date"] =  datetime.strftime(now,'%Y-%m-%d %H:%M:%S')
     
     # 連線DB並寫入，裡面的資訊記得改成自己的
-    engine = create_engine('postgresql://rgebussfpcabig:3beea883f44b198cb0a50f0c08309e8219da2197fb0150c8a45825e7098892c5@ec2-54-152-28-9.compute-1.amazonaws.com:5432/dgbp1fhbqfv1a')
+    # engine = create_engine('postgresql://rgebussfpcabig:3beea883f44b198cb0a50f0c08309e8219da2197fb0150c8a45825e7098892c5@ec2-54-152-28-9.compute-1.amazonaws.com:5432/dgbp1fhbqfv1a')
+    engine = create_engine('sqlite:///data.db')
     # 使用 replace 取代
     df.to_sql("stock_info", engine, if_exists='replace',index=False,method='multi')
 

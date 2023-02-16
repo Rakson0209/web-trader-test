@@ -1,5 +1,6 @@
 __pycache__/
 virtualenv/
+venv/
 .vscode/settings.json
 docker-compose.yml
 data.db

@@ -50,9 +50,10 @@ def stock_crawler_all():
 app = Flask(__name__)
 bootstrap = Bootstrap5(app)
 app.config['SECRET_KEY']= '346ffb6015c0677893c592ec8f13a7b7'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://rgebussfpcabig:3beea883f44b198cb0a50f0c08309e8219da2197fb0150c8a45825e7098892c5@ec2-54-152-28-9.compute-1.amazonaws.com:5432/dgbp1fhbqfv1a'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://rgebussfpcabig:3beea883f44b198cb0a50f0c08309e8219da2197fb0150c8a45825e7098892c5@ec2-54-152-28-9.compute-1.amazonaws.com:5432/dgbp1fhbqfv1a'
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 db = SQLAlchemy()
 db.init_app(app)
 

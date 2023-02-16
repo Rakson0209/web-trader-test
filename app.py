@@ -5,8 +5,6 @@ from models import User, transactions
 from forms import LoginForm, RegistrationForm, stock_tradingForm
 from sqlalchemy import func
 import math
-import psycopg2
-from psycopg2 import extras
 import json
 
 @app.route('/taiwan_stock_tick_snapshot',methods=['GET','POST'])
@@ -43,7 +41,7 @@ def dashboard():
 @app.route("/technical_analysis")
 @login_required
 def technical_analysis():
-    f = open('twstock_info.json')
+    f = open('twstock_info.json', encoding='utf-8')
     data = json.load(f)
     f.close()
     return render_template('technical_analysis.html', data=data)
@@ -51,7 +49,7 @@ def technical_analysis():
 @app.route("/stock_trading",methods=['GET','POST'])
 @login_required
 def stock_trading():
-    f = open('twstock_info.json')
+    f = open('twstock_info.json', encoding='utf-8')
     data = json.load(f)
     f.close()
     form = stock_tradingForm()
