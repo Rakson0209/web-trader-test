@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}
+  技術分析
+{% endblock %}
+
+{% block main %}
+
+<div class="row g-3 p-3 justify-content-center">
+  <div class="col-auto"> 
+    <input type="text" class="form-control" id="stock_id" aria-describedby="stock_idFeedback" autocomplete="off" autofocus placeholder="股票名稱或代碼">
+    <div class="invalid-feedback" id="stock_idFeedback">錯誤的股票代碼，請重新確認</div>
+  </div>
+  <div class="col-auto">
+    <input type="text" class="form-control" id="daterange">
+  </div>
+  <div class="col-auto">
+    <button type="button" class="btn btn-primary mb-3" id="stock">搜尋</button>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <span class="fs-3" id="stock_name_display"></span>
+    <span class="fs-4 text-muted" id="stock_no_display"></span>
+    <p class="lh-1">
+      <span class="fs-3" id="stock_current_price_display"></span>
+      <span class="fs-4" id="stock_change_price_display"></span>
+      <span class="fs-4" id="stock_change_percent_display"></span>
+      <br>
+      <span class="fs-6" id="stock_time_display"></span>
+    </p>
+  </div>
+</div>
+
+<div style="height: 70vh" id="chart"></div>
+
+<script>
+$SCRIPT_ROOT = {{ request.script_root|tojson }};
+twstock_info = {{ data|tojson }}
+</script>
+<script type="text/javascript" src ="{{url_for('static', filename='js/technical_analysis.js')}}"></script> 
+
+{% endblock %}

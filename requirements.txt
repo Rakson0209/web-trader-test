@@ -1,0 +1,17 @@
+Flask
+flask_sqlalchemy
+flask_login
+bootstrap-flask
+requests
+bs4
+pandas
+fake_useragent
+sqlalchemy
+apscheduler
+flask_wtf
+Werkzeug
+email_validator
+Flask-Migrate
+lxml
+gunicorn
+psycopg2

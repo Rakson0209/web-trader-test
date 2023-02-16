@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}
+    index
+{% endblock %}
+
+{% block main %}
+<p>請 <a href="{{url_for('login')}}">登入帳號</a> 或 <a href="{{url_for('register')}}">註冊帳號</a>
+</p>
+{% endblock %}

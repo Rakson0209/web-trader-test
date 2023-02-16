@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}
+    股票交易
+{% endblock %}
+
+{% block main %}
+
+<div class="row g-3 p-3 justify-content-center">
+  <div class="col-auto">
+    <input type="text" class="form-control" id="stock_id" aria-describedby="stock_idFeedback" autocomplete="off" autofocus placeholder="股票名稱或代碼">
+    <div class="invalid-feedback" id="stock_idFeedback">錯誤的股票代碼，請重新確認</div>
+  </div>
+  <div class="col-auto">
+    <button type="button" class="btn btn-primary mb-3" id="stock">搜尋</button>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <span  style="text-align: center; display:block;">
+      <span class="fs-3" id="stock_name_display"></span>
+      <span class="fs-4 text-muted" id="stock_no_display"></span>
+    </span>
+    <p class="lh-1 text-center">
+      <span class="fs-3" id="stock_current_price_display"></span>
+      <span class="fs-4" id="stock_change_price_display"></span>
+      <span class="fs-4" id="stock_change_percent_display"></span>
+      <br>
+      <span class="fs-6" id="stock_time_display"></span>
+    </p>
+  </div>
+</div>
+  
+<form method="post" id="form">
+  {{ form.csrf_token }}
+  {{form.stock_no()}}
+  {{form.stock_name()}}
+  <div class="row p-2 justify-content-center">
+    <div class="col-md-4">
+      {{form.shares(class='form-control')}}
+    </div>
+  </div>
+  <div class="row p-2 g-2 justify-content-center">
+    <div class="col-6 col-md-2">
+      {{form.buy(class='btn btn-danger w-100')}}
+    </div>
+    <div class="col-6 col-md-2">
+      {{form.sell(class='btn btn-success w-100')}}
+    </div>
+  </div>
+</form>
+
+  
+  
+<script>
+   
+$SCRIPT_ROOT = {{ request.script_root|tojson }};
+twstock_info = {{ data|tojson }}
+</script>
+<script src="{{url_for('static', filename='js/stock_trading.js')}}"></script>
+
+
+{% endblock %}

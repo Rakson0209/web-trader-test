@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+
+<div class="row g-3 p-3">
+    <div class="col-12 col-md-6">
+        <div class="card">
+            <div class="card-body" style="height: 40vh">
+                <canvas id="unrealized_profit_chart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6">
+        <div class="card">
+            <div class="card-body" style="height: 40vh">
+                <canvas id="market_value_chart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row p-3">
+    <div class="col">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">代號</th>
+                        <th scope="col">股票</th>
+                        <th scope="col">股數</th>
+                        <th scope="col">市價</th>
+                        <th scope="col">市值</th>
+                        <th scope="col">成本</th>
+                        <th scope="col">預估損益</th>
+                        <th scope="col">成交均價</th>
+                        <th scope="col">報酬率</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stock in stocks %}
+                        <tr>
+                            <td scope="row">{{ stock.stock_no }}</td>
+                            <td class="text-primary">{{ stock.stock_name }}</td>
+                            <td>{{ '{:,}'.format(stock.sumofshares) }}</td>
+                            <td>{{ '{:,}'.format(array[stock.stock_no]) }}</td>
+                            <td>{{ '{:,}'.format(price_of_shares[stock.stock_no]) }}</td>
+                            <td>{{ '{:,}'.format(stock.sumoftotal) }}</td>
+                            {% if price_of_shares[stock.stock_no] > stock.sumoftotal %}
+                                <td class="text-danger">
+                            {% elif price_of_shares[stock.stock_no] == stock.sumoftotal %}
+                                <td>
+                            {% else %}
+                                <td class="text-success">
+                            {% endif %} 
+                            {{ '{:,}'.format(price_of_shares[stock.stock_no]  - stock.sumoftotal) }}
+                            </td>
+                            <td>{{ '{:,}'.format((stock.sumoftotal/stock.sumofshares) | round(2, 'floor')) }}</td>
+                            {% if price_of_shares[stock.stock_no] > stock.sumoftotal %}
+                                <td class="text-danger">
+                            {% elif price_of_shares[stock.stock_no] == stock.sumoftotal %}
+                                <td>
+                            {% else %}
+                                <td class="text-success">
+                            {% endif %} 
+                            {{ '{:,}'.format((((price_of_shares[stock.stock_no] - stock.sumoftotal)/stock.sumoftotal)*100) | round(2, 'floor')) }}%
+                            </td>
+                        </tr>
+                    {% endfor %}
+                <tfoot>
+                    <tr>
+                        <td scope="row">餘額</td>
+                        <td colspan="7"></td>
+                        <td>{{ '{:,}'.format(remaining_cash) }}</td>
+                    </tr>
+                    <tr>
+                        <td scope="row">總資產</td>
+                        <td colspan="7"></td>
+                        <td>{{ '{:,}'.format(total | int) }}</td>
+                    </tr>
+                </tfoot>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+
+const labels = [];
+const unrealized_profit = [];
+const market_value =[];
+
+{% for stock in stocks %}
+labels.push('{{stock.stock_name}}');
+unrealized_profit.push({{ price_of_shares[stock.stock_no]  - stock.sumoftotal }});
+market_value.push({{price_of_shares[stock.stock_no]}});
+{% endfor %}
+
+const unrealized_profit_data = {
+    labels: labels,
+    datasets: [{
+    label: '預估損益',
+    data: unrealized_profit,
+    borderColor: 'rgba(54, 162, 235)',
+    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+    borderWidth: 1
+    }]
+};
+
+const market_value_data = {
+    labels: labels,
+    datasets: [{
+    label: '市值',
+    data: market_value,
+    borderColor: 'rgba(75, 192, 192)',
+    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+    borderWidth: 1
+    }]
+};
+
+const unrealized_profit_chart = new Chart(
+document.getElementById('unrealized_profit_chart'),
+    {
+    type: 'bar',
+    data: unrealized_profit_data,
+    options: {
+        maintainAspectRatio: false,
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: '未實現損益表'
+            }
+        },
+    }
+});
+
+const market_value_chart = new Chart(
+document.getElementById('market_value_chart'),
+    {
+    type: 'bar',
+    data: market_value_data,
+    options: {
+        maintainAspectRatio: false,
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: '股票市值表'
+            }
+        },
+    }
+});
+</script>
+{% endblock %}

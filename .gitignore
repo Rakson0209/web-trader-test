@@ -1,0 +1,6 @@
+__pycache__/
+virtualenv/
+.vscode/settings.json
+docker-compose.yml
+data.db
+old/

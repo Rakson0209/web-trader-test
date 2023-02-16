@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}
+    交易紀錄
+{% endblock %}
+
+{% block main %}
+<div class="row p-3">
+    <div class="col">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <th>代號</th>
+                    <th>股票</th>
+                    <th>交易別</th>
+                    <th>成交股數</th>
+                    <th>單價</th>
+                    <th>手續費</th>
+                    <th>交易稅</th>
+                    <th>淨收付</th>
+                    <th>時間</th>
+                </thead>
+                <tbody>
+                {% for transaction in trans %}
+                {% if transaction.shares > 0 %}
+                <tr class="table-danger">
+                {% else %}
+                <tr class="table-success">
+                {% endif %} 
+                    <td>{{ transaction.stock_no }}</td>
+                    <td class="text-primary">{{ transaction.stock_name }}</td>
+                    {% if transaction.shares > 0 %}
+                    <td class="text-danger">
+                        買入
+                    {% else %}
+                    <td class="text-success">
+                        賣出
+                    {% endif %}
+                    </td>
+                    <td>{{ '{:,}'.format(transaction.shares | abs) }}</td>
+                    <td>{{ '{:,}'.format(transaction.price) }}</td>
+                    <td>{{ '{:,}'.format(transaction.fee) }}</td>
+                    <td>{{ '{:,}'.format(transaction.tax) }}</td>
+                    {% if transaction.shares > 0 %}
+                        <td class="text-success">
+                    {% else %}
+                        <td class="text-danger">
+                    {% endif %}
+                    {{ '{:,}'.format(transaction.total * -1) }}</td>
+                    <td>{{ transaction.etl_date }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
