@@ -9,23 +9,36 @@ import pandas as pd
 from fake_useragent import UserAgent
 from datetime import datetime
 
+
 def stock_crawler(stock_id):
     # 抓取股票資訊
-    url = "https://invest.cnyes.com/twstock/tws/" + stock_id
+    url = "https://histock.tw/stock/" + stock_id
     user_agent = UserAgent()
     headers = {'user-agent': user_agent.random}
 
     # 獲取 html 資訊
-    res = requests.get(url, headers = headers)
+    res = requests.get(url, headers=headers)
     tmp = BeautifulSoup(res.text, 'lxml')
-    
-    price = tmp.select_one('.info-lp').get_text()
-    ud = tmp.select_one('.change-net').get_text()
-    udp = tmp.select_one('.change-percent').get_text()
+
+    url = "https://histock.tw/stock/" + stock_id
+    user_agent = UserAgent()
+    headers = {'user-agent': user_agent.random}
+
+    # 獲取 html 資訊
+    res = requests.get(url, headers=headers)
+    tmp = BeautifulSoup(res.text, 'lxml')
+
+    # find <span id="Price1_lbTPrice">
+    price = tmp.find(id="Price1_lbTPrice").text
+    # find <span id="Price1_lbTChange">
+    ud = tmp.find(id="Price1_lbTChange").text
+    # find <span id="Price1_lbTPercent">
+    udp = tmp.find(id="Price1_lbTPercent").text
     now = datetime.now()
-    etl_date =  datetime.strftime(now,'%Y-%m-%d %H:%M:%S')
+    etl_date = datetime.strftime(now, '%Y-%m-%d %H:%M:%S')
     result = {'price': price, 'ud': ud, 'udp': udp, 'etl_date': etl_date}
     return result
+
 
 def stock_crawler_all():
     # 抓取股票資訊
@@ -34,22 +47,24 @@ def stock_crawler_all():
     headers = {'user-agent': user_agent.random}
 
     # 獲取 html 資訊
-    res = requests.get(url, headers = headers)
+    res = requests.get(url, headers=headers)
     tmp = BeautifulSoup(res.text, 'lxml').select_one('#CPHB1_gv')
     df = pd.read_html(tmp.prettify())[0]
 
     # 優化一下欄位名稱
-    df.columns = ['stock_no', 'stock_name', 'price', 'ud', 'udp', 'ud_w', 'amp','open', 'high', 'low', 'price_y', 'vol', 'vol_p']
+    df.columns = ['stock_no', 'stock_name', 'price', 'ud', 'udp',
+                  'ud_w', 'amp', 'open', 'high', 'low', 'price_y', 'vol', 'vol_p']
     # 新增欄位註記資料更新時間
     now = datetime.now()
-    df["etl_date"] =  datetime.strftime(now,'%Y-%m-%d %H:%M:%S') 
-    df.set_index('stock_no' , inplace=True)
+    df["etl_date"] = datetime.strftime(now, '%Y-%m-%d %H:%M:%S')
+    df.set_index('stock_no', inplace=True)
 
     return df
 
+
 app = Flask(__name__)
 bootstrap = Bootstrap5(app)
-app.config['SECRET_KEY']= '346ffb6015c0677893c592ec8f13a7b7'
+app.config['SECRET_KEY'] = '346ffb6015c0677893c592ec8f13a7b7'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://rgebussfpcabig:3beea883f44b198cb0a50f0c08309e8219da2197fb0150c8a45825e7098892c5@ec2-54-152-28-9.compute-1.amazonaws.com:5432/dgbp1fhbqfv1a'
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
